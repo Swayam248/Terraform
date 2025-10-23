@@ -1,0 +1,50 @@
+provider "aws" {
+  region     = "us-east-1"
+  access_key = "xyz"
+  secret_key = "xyz"
+}
+resource "aws_instance" "devops-server" {
+  ami                    = "ami-0341d95f75f311023"    # change accordingly
+  instance_type          = "t3.micro"
+  availability_zone      = "us-east-1a"
+  key_name               = "thu-key"  # No .pem extension and change accordingly
+  vpc_security_group_ids = [aws_security_group.tera_sg.id]
+
+  tags = {
+    Name = "Hello"
+  }
+}
+
+resource "aws_security_group" "tera_sg" {
+  name        = "allow_tls_terraform"  # Sec group name
+  description = "Allow SSH and HTTP"
+  vpc_id      = "vpc-0aa01ddfe401988c8"   #change accordingly
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "tera-sg"
+  }
+}
+
+
+//change the key and vpc id
