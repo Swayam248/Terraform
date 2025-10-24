@@ -1,0 +1,23 @@
+Creating 86x64 
+--------------------------
+configure aws in cli
+--------------------------
+data "aws_ami" "example" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023*"]
+  }
+}
+resource "aws_instance" "example" {
+  ami           = data.aws_ami.example.id
+  instance_type = "t3.micro"
+  tags = {
+    Name = "test-spot"
+  }
+}
