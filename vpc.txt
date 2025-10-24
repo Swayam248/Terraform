@@ -1,3 +1,6 @@
+inside directory, ssh-keygen -f terra-admin
+cat terra-admin.pub
+
 #for vpc
 resource "aws_vpc" "prod_vpc" {
   cidr_block = "10.0.0.0/16"
@@ -107,7 +110,7 @@ resource "aws_eip" "sanjay-ec2-eip" {
 #add ssh-key
 
 resource "aws_key_pair" "terra-admin" {
-  key_name   = "terra-admin"
+  key_name   = "terra-admin"        #terra-admin.pub content
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCvkVsy7m6HjAIaszRx7qVdqwXlNxRu8tKBiCu9K+BULqggzwRb254yEg7kZHyM9otcg24zsjqM2c79dNIy9ilc89BVuP0xTZjJv7pOHm+FhjsjmI7FzEOzoG2+hR95ZeoVTyz2g0c+QSF6StaCcY4zx4lDMkrs63eEKY5N3URBMOTach//0ifkwsmSTNME2t6GBlLrtGstcOqBZ7IOti/8mW8FLU5MlkiXAjJ17sZuwPgK6LTKXYyIHiU4QbULpbgZi1B8ihCRWjRa3qwEuj9+cZtfLf6sYvhF2s54kTA5PALCFbZMLGxNZUQA917IFi/9lIYzL+h/NRl3MH6q0qFpeYRkl/Rq75CkkG/9cy5x9UZpzJXwRHlrHwaNxXmI0ZQkcEVPJqkuL216+w6NHTw15gkxFg6oJ82zLYbD7XEgncCJ6RNumzWPSBnWzoOpE4qJK1f9Xz8yFD6i/W0KrOrQCstlMdcPQAx1ECHR4kqrlhoAU9TvuEzqdkWEFD3epXs= root@terraform.example.com"
 }
 ##create a public ip for Nat gateway
@@ -155,3 +158,4 @@ resource "aws_instance" "swayam-server-pvt" {
   }
 
 }
+
