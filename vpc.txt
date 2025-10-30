@@ -1,6 +1,13 @@
 inside directory, ssh-keygen -f terra-admin
 cat terra-admin.pub
 
+vim vpc.tf
+-------------------------------
+provider "aws" {
+  region     = "us-east-1"
+  access_key = "xyz"
+  secret_key = "xyz"
+}
 #for vpc
 resource "aws_vpc" "prod_vpc" {
   cidr_block = "10.0.0.0/16"
@@ -20,6 +27,7 @@ resource "aws_internet_gateway" "prod-igw" {
 resource "aws_subnet" "public-subnet" {
   vpc_id     = aws_vpc.prod_vpc.id
   cidr_block = "10.0.0.0/24"
+  availability_zone = "us-east-1a"
 
   tags = {
     Name = "public-subnet"
@@ -31,6 +39,7 @@ resource "aws_subnet" "public-subnet" {
 resource "aws_subnet" "private-subnet" {
   vpc_id     = aws_vpc.prod_vpc.id
   cidr_block = "10.0.1.0/24"
+  availability_zone = "us-east-1a"
 
   tags = {
     Name = "private-subnet"
@@ -88,14 +97,14 @@ resource "aws_route_table_association" "public-rt-asso" {
 
 #ec2 in public subnet
 
-resource "aws_instance" "swayam-server" {
-  ami             = "ami-0341d95f75f311023" #change accordingly
+resource "aws_instance" "public-server" {
+  ami             = "ami-0bdd88bd06d16ba03"
   subnet_id       = aws_subnet.public-subnet.id
   instance_type   = "t3.micro"
   security_groups = ["${aws_security_group.test_access.id}"]
   key_name        = "terra-admin"
   tags = {
-    Name     = "test-World"
+    Name     = "test-World_pub"
     Stage    = "testing"
     Location = "chennai"
   }
@@ -104,14 +113,14 @@ resource "aws_instance" "swayam-server" {
 
 ##create an EIP for EC2
 resource "aws_eip" "sanjay-ec2-eip" {
-  instance = aws_instance.swayam-server.id
+  instance = aws_instance.public-server.id
 }
 
 #add ssh-key
 
 resource "aws_key_pair" "terra-admin" {
-  key_name   = "terra-admin"        #terra-admin.pub content
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCvkVsy7m6HjAIaszRx7qVdqwXlNxRu8tKBiCu9K+BULqggzwRb254yEg7kZHyM9otcg24zsjqM2c79dNIy9ilc89BVuP0xTZjJv7pOHm+FhjsjmI7FzEOzoG2+hR95ZeoVTyz2g0c+QSF6StaCcY4zx4lDMkrs63eEKY5N3URBMOTach//0ifkwsmSTNME2t6GBlLrtGstcOqBZ7IOti/8mW8FLU5MlkiXAjJ17sZuwPgK6LTKXYyIHiU4QbULpbgZi1B8ihCRWjRa3qwEuj9+cZtfLf6sYvhF2s54kTA5PALCFbZMLGxNZUQA917IFi/9lIYzL+h/NRl3MH6q0qFpeYRkl/Rq75CkkG/9cy5x9UZpzJXwRHlrHwaNxXmI0ZQkcEVPJqkuL216+w6NHTw15gkxFg6oJ82zLYbD7XEgncCJ6RNumzWPSBnWzoOpE4qJK1f9Xz8yFD6i/W0KrOrQCstlMdcPQAx1ECHR4kqrlhoAU9TvuEzqdkWEFD3epXs= root@terraform.example.com"
+  key_name   = "terra-admin"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC2z6EmaFj//6PY5Beweo2KbgYgpPOMMCVD9G222sMjfTBs0QVTshDLYoXi/AoeuG1hLKxRl1SrGJtmqIH669deKiLYSRee2tiNwX0B4OFXXNHVNhU6dXxqYYDMCLW93fFCL7E16XzO5SsPEyVt94cLUByoJaSEj4Q9mVR7LBFVewuImLt7/bkCEWb4AxLvEtH2JF1sRIAT+HBax4Zd5AM8JPYiwjxzvaFRccLUh0mbehbqlj35JIezVs/XllE/OhpvDVjmR6JfGN8M5xuKKdXxyiixxb2u+EeeuzNAnvYz4VGt92/4YwaSK6QtJlgScjE46detsP2ay/xNheDYC5e8sKsD7ZdLYOHkAC+Zk75e/oFagnYNI5DNo71B1o5DvqsYQp+tUiTR1azhkRGz5lvhR2T+IDLe5qbKq5OiqGByLyD9A/xAjodg75dMAoo1tweFBQn/R0qgclQGfiV1gy/q3NM5HYi7DjteefNyV/R1z/m/vZWvEPEz24l0tNBvkAs= root@terraform"
 }
 ##create a public ip for Nat gateway
 resource "aws_eip" "nat-eip" {
@@ -145,17 +154,22 @@ resource "aws_route_table_association" "private-asso" {
 }
 #private server
 
-resource "aws_instance" "swayam-server-pvt" {
-  ami             = "ami-0341d95f75f311023" #change accordingly
+resource "aws_instance" "private-server" {
+  ami             = "ami-0bdd88bd06d16ba03"
   subnet_id       = aws_subnet.private-subnet.id
   instance_type   = "t3.micro"
   security_groups = ["${aws_security_group.test_access.id}"]
   key_name        = "terra-admin"
   tags = {
-    Name     = "test-World"
+    Name     = "test-World-pvt"
     Stage    = "testing"
     Location = "chennai"
   }
 
 }
+-----------------------
+terraform init
+terraform fmt
+terraform validate
+terraform apply
 
