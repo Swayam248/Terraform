@@ -1,7 +1,7 @@
-inside directory, ssh-keygen -f terra-admin
-cat terra-admin.pub
+# inside directory, ssh-keygen -f terra-admin
+# cat terra-admin.pub
 
-vim vpc.tf
+# vim vpc.tf
 -------------------------------
 provider "aws" {
   region     = "us-east-1"
