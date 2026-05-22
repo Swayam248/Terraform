@@ -1,6 +1,6 @@
-Creating 86x64 
+#Creating 86x64 
 --------------------------
-configure aws in cli
+#configure aws in cli
 --------------------------
 data "aws_ami" "example" {
   most_recent = true
