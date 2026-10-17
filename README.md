@@ -17,12 +17,13 @@ This repository contains reusable **Terraform HCL configurations**, example reso
 
 ```text
 Terraform/
-├── Creating instance with new Security Group..tf
+├── Creating instance with new Security Group.tf
 ├── Terraform installation guide.md
 ├── count-example.tf
 ├── ec2_x86_launch.tf
 ├── vpc.tf
 ├── vpc_with_variables.tf
+|── for_each-example.tf
 └── README.md
 ```
 
