@@ -18,3 +18,6 @@ resource "aws_instance" "web" {
     Name = "web-${count.index}"
   }
 }
+
+# count.index provides the zero-based index of each instance.
+# The Name tag uses count.index to give each instance a unique name.
